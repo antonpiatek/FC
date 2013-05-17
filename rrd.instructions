@@ -1,0 +1,29 @@
+## create a rrd datafile
+#  do we need --step in here?
+rrdtool create temperatures.rrd --step 6 \
+    DS:LivingRm:GAUGE:10:-20:60    \ # track temp every 10 sec, expecing readings every 6 sec. min -20, max 60
+    DS:Bedroom:GAUGE:10:-20:60     \ #
+    DS:SpareRm:GAUGE:10:-20:60    \ #
+    DS:Outside:GAUGE:10:-20:60     \ #
+    RRA:AVERAGE:0.5:6:10080         \ # per 1 min avg,  keep 7 days worth
+    RRA:AVERAGE:0.5:60:31248        \ # per 10 min avg, keep 1 months worth
+    RRA:AVERAGE:0.5:360:31248       \ # per 60 min avg, keep 6 months worth
+    RRA:AVERAGE:0.5:8640:365        \ # per day avg,    keep 1 years worth
+    RRA:MIN:0.5:6:10080             \ # per 1 min avg,  keep 7 days worth
+    RRA:MIN:0.5:60:31248            \ # per 10 min avg, keep 1 months worth
+    RRA:MIN:0.5:360:31248           \ # per 60 min avg, keep 6 months worth
+    RRA:MIN:0.5:8640:365            \ # per day avg,    keep 1 years worth
+    RRA:MAX:0.5:6:10080             \ # per 1 min avg,  keep 7 days worth
+    RRA:MAX:0.5:60:31248            \ # per 10 min avg, keep 1 months worth
+    RRA:MAX:0.5:360:31248           \ # per 60 min avg, keep 6 months worth
+    RRA:MAX:0.5:8640:365            \ # per day avg,    keep 1 years worth
+  
+## Update values
+rrdtool update temperatures.rrd N:20:22:19:10
+
+## Check last recorded values
+rrdtool lastupdate temperatures.rrd
+
+#rrdtool  graph  temp.png DEF:data=../../currentcost.rrd:temp:AVERAGE  LINE1:data#ff0000:temp
+#rrdtool  graph  power.png DEF:data=../../currentcost.rrd:power:AVERAGE  LINE1:data#ff0000:power
+
