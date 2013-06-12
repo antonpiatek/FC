@@ -6,7 +6,7 @@ project(ArduinoExample C CXX)
 print_board_list()
 print_programmer_list()
 
-set(ARDUINO_DEFAULT_BOARD leonardo) # Default Board ID, when not specified
+set(ARDUINO_DEFAULT_BOARD uno) # Default Board ID, when not specified
 set(ARDUINO_DEFAULT_PORT /dev/ttyACM0) # Default Port, when not specified
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib)
