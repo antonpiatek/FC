@@ -1,3 +1,5 @@
+#include "Arduino.h"
+#include "FC.h"
 #include <Wire.h>
 #include <stdlib.h>
 #include <OneWire.h>
@@ -25,75 +27,6 @@ char* knownSensorNames[] = { "Bedroom ","LivingRm","Outside ","Nursery "};
 
 int * actualToExpected;
 
-void setup() {
-  // start serial port
-  Serial.begin(9600);
-
-  // setup LCD
-  Wire.begin();
-
-  //give display a second to startup before doing initial setup for it
-  delay(1000);
-  Wire.beginTransmission(LCD);
-  //clear display
-  clearLCD();
-  //turn off cursor
-  Wire.send(254);
-  Wire.send(84);
-  Wire.endTransmission();
-
-  // setup 1-wire temp sensors
-  sensors.begin();
-
-  Serial.println("initialised...");
-
-  checkKnownSensors();
-}
-
-
-void loop() {
-  //printTemp_simple();
-  
-  sensors.requestTemperatures(); // Send the command to get temperatures
-  for( int i=0; i<numberOfTemperatureSensors; i++)
-  { 
-    DeviceAddress device;
-    if(sensors.getAddress(device, i))
-    {  
-      char name[9];
-      getSensorName(i,name);
-
-      Serial.print( "Temp reading " );      
-      Serial.print( name );
-      Serial.print(": ");
-
-      float temp = sensors.getTempCByIndex(i);
-      
-      Wire.beginTransmission(LCD);    
-      clearLCD();
-      
-      int line = (i % 4)+1;
-      moveCursorTo(0,line);
-      Wire.send( name );
-      Wire.endTransmission();
-   
-      if( temp < -60 || temp >= 100 )
-      {
-        Wire.beginTransmission(LCD);
-        Wire.send( "invalid reading: " );
-        Wire.endTransmission();  
-        Serial.println("invalid");
-      }
-      else
-      {
-        printTemp_large(temp);
-        Serial.println(temp);
-      }
-      delay(2000);
-    }
-  }
-}
-
 
 
 /*
@@ -109,8 +42,8 @@ void printTemp_simple()
   sprintf(ascii,"%2d", reading );
 
   Wire.beginTransmission(LCD);
-  Wire.send( "temp: " );
-  Wire.send( ascii );
+  Wire.write( "temp: " );
+  Wire.write( ascii );
   Wire.endTransmission();
 }
 */
@@ -147,24 +80,24 @@ void printTemp_large(float floatTemp)
   bigDigit(15, digitTwo);
 
   moveCursorTo(18,0);
-  Wire.send(0xDF); // deg symbol (ish)
-  Wire.send("C");
+  Wire.write(0xDF); // deg symbol (ish)
+  Wire.write("C");
 
   // set negative sign as required  
   moveCursorTo(negativePos,6);
   if( floatTemp < 0 )
   {
-    Wire.send("_");
+    Wire.write("_");
   }
   else
   {
-    Wire.send(" ");
+    Wire.write(" ");
   }
   
   //send decimal value
   moveCursorTo(18,4);
-  Wire.send(".");
-  Wire.send(decimalPlace);
+  Wire.write(".");
+  Wire.write(decimalPlace);
 
   Wire.endTransmission();
 }
@@ -174,18 +107,18 @@ void printTemp_large(float floatTemp)
 // Write a big Big digit (call enableBigDigits() first)
 // params: column, digit
 void bigDigit(int col, int digit){
-  Wire.send(254);
-  Wire.send(35);
-  Wire.send(col);
-  Wire.send(digit);
+  Wire.write(254);
+  Wire.write(35);
+  Wire.write(col);
+  Wire.write(digit);
 }
 
 
 
 // initialize large digits
 void enableBigDigits(){
-  Wire.send(254);
-  Wire.send(110);
+  Wire.write(254);
+  Wire.write(110);
 }
 
 
@@ -193,18 +126,18 @@ void enableBigDigits(){
 // Move cursor to position
 // params: column, row
 void moveCursorTo(int col, int row){
-  Wire.send(254);
-  Wire.send(71);
-  Wire.send(col);
-  Wire.send(row);
+  Wire.write(254);
+  Wire.write(71);
+  Wire.write(col);
+  Wire.write(row);
 }
 
 
 // clear LCD display
 void clearLCD()
 {
-  Wire.send(254);
-  Wire.send(88);
+  Wire.write(254);
+  Wire.write(88);
 }
 
 
@@ -243,14 +176,14 @@ void checkKnownSensors()
     Serial.print(" sensors, but actually found ");
     Serial.println( numberOfTemperatureSensors );
     Wire.beginTransmission(LCD);
-    Wire.send("ERROR: expected ");
+    Wire.write("ERROR: expected ");
     char a[2]; //1 val temp, plus null termination
     itoa(knownSensorCount,a,10);
-    Wire.send( a );
-    Wire.send("\nbut found ");
+    Wire.write( a );
+    Wire.write("\nbut found ");
     itoa(numberOfTemperatureSensors,a,10);
-    Wire.send( a );
-    Wire.send("\n");
+    Wire.write( a );
+    Wire.write("\n");
     Wire.endTransmission();
     delay(3000);
     Wire.beginTransmission(LCD);
@@ -329,6 +262,76 @@ void getSensorName (int deviceNumber, char* name)
   else
   {
     strcpy( name, knownSensorNames[ actualToExpected[deviceNumber] ] );
+  }
+}
+
+void setup() {
+  // start serial port
+  Serial.begin(9600);
+
+  // setup LCD
+  Wire.begin();
+
+  //give display a second to startup before doing initial setup for it
+  delay(1000);
+  Wire.beginTransmission(LCD);
+  //clear display
+  clearLCD();
+  //turn off cursor
+  Wire.write(254);
+  Wire.write(84);
+  Wire.endTransmission();
+
+  // setup 1-wire temp sensors
+  sensors.begin();
+
+  Serial.println("initialised...");
+
+  checkKnownSensors();
+}
+
+
+
+void loop() {
+  //printTemp_simple();
+  
+  sensors.requestTemperatures(); // Send the command to get temperatures
+  for( int i=0; i<numberOfTemperatureSensors; i++)
+  { 
+    DeviceAddress device;
+    if(sensors.getAddress(device, i))
+    {  
+      char name[9];
+      getSensorName(i,name);
+
+      Serial.print( "Temp reading " );      
+      Serial.print( name );
+      Serial.print(": ");
+
+      float temp = sensors.getTempCByIndex(i);
+      
+      Wire.beginTransmission(LCD);    
+      clearLCD();
+      
+      int line = (i % 4)+1;
+      moveCursorTo(0,line);
+      Wire.write( name );
+      Wire.endTransmission();
+   
+      if( temp < -60 || temp >= 100 )
+      {
+        Wire.beginTransmission(LCD);
+        Wire.write( "invalid reading: " );
+        Wire.endTransmission();  
+        Serial.println("invalid");
+      }
+      else
+      {
+        printTemp_large(temp);
+        Serial.println(temp);
+      }
+      delay(2000);
+    }
   }
 }
 
