@@ -1,0 +1,33 @@
+{
+  "name": "FC",
+  "version": "1.0.0",
+  "description": "home power/temperature automation",
+  "author": "Anton Piatek <anton@piatek.co.uk>",
+  "engines": {
+    "node": "*",
+    "coffee-script": "*"
+  },
+  "main": "./nodejs/FC",
+  "bin": {
+    "FC": "./bin/FC"
+  },
+  "dependencies": {
+    "coffee-script": "*",
+    "express": "^4.11.2",
+    "jade": "^1.9.2",
+    "mqtt": "^1.0.9",
+    "serialport": "*",
+    "websocket": "*",
+    "xml2js": "*"
+  },
+  "dev-dependencies": {
+    "nodemon": "*"
+  },
+  "scripts": {
+    "readPower": "nodemon ./nodejs/readPower.coffee",
+    "web"      : "nodemon ./nodejs/web.coffee",
+    "web_dev"  : "DEVEL=true nodemon ./nodejs/web.coffee"
+  },
+  "private": true,
+  "license": "MIT"
+}
