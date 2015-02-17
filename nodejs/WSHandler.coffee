@@ -61,7 +61,7 @@ exports.WSHandler =
         @logger.warn "mqtt error #{e}"
 
       mqttClient.on 'message', (topic, message) =>
-        @logger.log "mqtt >> #{topic} #{message}"
+        @logger.log "mqtt >> #{topic} #{message}" if @devel
         topic = topic.trim() #looks like my old topic all have a trailing space!
         wsConn.sendUTF JSON.stringify {topic: topic, message: message.toString()}
 
