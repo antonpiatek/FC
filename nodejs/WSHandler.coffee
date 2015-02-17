@@ -6,7 +6,7 @@ exports.WSHandler =
     mqtt = require 'mqtt'
     
     constructor: (@server,@logger) ->
-      @devel = process.env.DEVEL
+      @devel = process.env.NODE_ENV == 'development'
       @logger.log "new WSHandler"
 
       WebSocketServer = ws.server
@@ -15,6 +15,9 @@ exports.WSHandler =
 
     originIsAllowed: (origin) ->
       # TODO put logic here to detect whether the specified origin is allowed.
+      @logger.log origin
+      # match same host as our server? 
+      # http://192.168.0.2:8080
       return true if @devel # Allow things like a chrome WS plugin to connect
 
     requestHandler: (request) ->
@@ -59,6 +62,7 @@ exports.WSHandler =
 
       mqttClient.on 'message', (topic, message) =>
         @logger.log "mqtt >> #{topic} #{message}"
+        topic = topic.trim() #looks like my old topic all have a trailing space!
         wsConn.sendUTF JSON.stringify {topic: topic, message: message.toString()}
 
       return mqttClient
