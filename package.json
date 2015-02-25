@@ -7,10 +7,7 @@
     "node": "*",
     "coffee-script": "*"
   },
-  "main": "./nodejs/FC",
-  "bin": {
-    "FC": "./bin/FC"
-  },
+  "main": "./nodejs/web.coffee",
   "dependencies": {
     "coffee-script": "^1.9.0",
     "error-handler": "^1.0.0",
@@ -28,7 +25,7 @@
   "scripts": {
     "readPower": "nodemon ./nodejs/readPower.coffee",
     "web": "nodemon ./nodejs/web.coffee",
-    "web_dev": "NODE_ENV=development nodemon ./nodejs/web.coffee"
+    "web_dev": "NODE_ENV=development nodemon ./nodejs/web.coffee",
   },
   "private": true,
   "license": "MIT"
