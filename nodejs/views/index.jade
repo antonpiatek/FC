@@ -8,13 +8,13 @@ block body
           span.icon-bar
           span.icon-bar
           span.icon-bar
-      a.navbar-brand(href="#") Home monitoring
+      a.navbar-brand Home monitoring
     
       #navbar-inverse.collapse.navbar-collapse
         ul.nav.navbar-nav
-          li.active: a( href="#") Overview
-          li: a( href="#power" ) Power
-          li: a( href="#temperature" ) Temperature
+          li#button_overview.active: a( href="#") Overview
+          li#button_power: a( href="#" ) Power
+          li#button_temperature: a( href="#" ) Temperature
           //-li.dropdown
           //-  a.dropdown-toggle( href="#", data-toggle="dropdown", role="button", aria-expanded="false" ) Dropdown 
           //-    span.caret
@@ -27,31 +27,64 @@ block body
           //-      li: a( href="#" ) Separated link
           //-      li: a( href="#" ) One more separated link
     //-h1 Jade - node template engine
-    .container
-      .col-lg-6
-        .panel.panel-default
-          .panel-heading 
-            h4.panelTitle Temperatures
-          #Temperatures.panelBody
+    #overviewMain.container
+      .container
+        .col-lg-6
+          .panel.panel-default
+            .panel-heading 
+              h4.panelTitle Temperatures
+            #Temperatures.panelBody
 
-      .col-lg-6
-        .panel.panel-default
-          .panel-heading 
-            h4.panelTitle Power
-          #PowerMeter.panelBody
-    .container
+        .col-lg-6
+          .panel.panel-default
+            .panel-heading 
+              h4.panelTitle Power
+            #PowerMeter.panelBody
       .container
         .panel.panel-warning
           .panel-heading 
             h5.panelTitle Debug
           #debug.panelBody
+    #powerMain.container
+      .panel.panel-default
+        .panel-heading 
+          h4.panelTitle Power
+        .panelBody
+          h4 Hour
+          img(src="#{settings.baseurl}generatedcharts/power.hour.png")
+          h4 Day
+          img(src="#{settings.baseurl}generatedcharts/power.week.png")
+          h4 Week
+          img(src="#{settings.baseurl}generatedcharts/power.week.png")
+          h4 Month
+          img(src="#{settings.baseurl}generatedcharts/power.month.png")
+          h4 Year
+          img(src="#{settings.baseurl}generatedcharts/power.year.png")
+
+    #temperatureMain.container
+      .panel.panel-default
+        .panel-heading 
+          h4.panelTitle Temperatures
+        .panelBody
+          h4 Hour
+          img(src="#{settings.baseurl}generatedcharts/temp.hour.png")
+          h4 Day
+          img(src="#{settings.baseurl}generatedcharts/temp.week.png")
+          h4 Week
+          img(src="#{settings.baseurl}generatedcharts/temp.week.png")
+          h4 Month
+          img(src="#{settings.baseurl}generatedcharts/temp.month.png")
+          h4 Year
+          img(src="#{settings.baseurl}generatedcharts/temp.year.png")
 
     footer.footer
       .container.text-muted
           span Last update&nbsp;
           span#lastUpdate
         
-
+    script.
+        window.baseurl = '#{settings.baseurl}';
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js' )
     script(src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js")
-    script(src="/client.js")
+    script(src="#{settings.baseurl}/guage.min.js")
+    script(src="#{settings.baseurl}/client.js")
