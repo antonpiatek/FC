@@ -13,16 +13,16 @@ exports.WSHandler =
       wsServer = new WebSocketServer {httpServer: @server, autoAcceptConnections: false}
       wsServer.on 'request', (req) => @requestHandler req
 
-    originIsAllowed: (origin) ->
-      # TODO put logic here to detect whether the specified origin is allowed.
-      @logger.log origin
-      # match same host as our server? 
-      # http://192.168.0.2:8080
+    originIsAllowed: (request) ->
+      # There must be a better way than hardcoding urls...
+      return true if request.origin == "http://#{request.host}"
+      return true if request.origin == "https://#{request.host}"
       return true if @devel # Allow things like a chrome WS plugin to connect
+      return false
 
     requestHandler: (request) ->
       # Make sure we only accept requests from an allowed origin
-      if ! @originIsAllowed request.origin
+      if ! @originIsAllowed request
         request.reject
         @logger.warnHTTP request,' Connection from origin ' + request.origin + ' rejected.'
         return
