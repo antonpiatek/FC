@@ -69,7 +69,8 @@ setInterval ->
   rrd_temp.update new Date(), [ updates["LivingRm"],updates["Bedroom"],updates["SpareRm"],updates["Outside"]], (err) ->
     if err
       console.log "error: #{err}"
-, 10*1000
+, 5*1000
+#TODO: Seems rrd logs very, very frequently... shouldnt need to log every 5 sec
 
 temps = {}
 rrd_power = new RRD "/home/anton/bin/cc/currentcost.rrd"
