@@ -69,7 +69,7 @@ setInterval ->
   rrd_temp.update new Date(), [ updates["LivingRm"],updates["Bedroom"],updates["SpareRm"],updates["Outside"]], (err) ->
     if err
       console.log "error: #{err}"
-, 30*1000
+, 10*1000
 
 temps = {}
 rrd_power = new RRD "/home/anton/bin/cc/currentcost.rrd"
