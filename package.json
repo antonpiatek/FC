@@ -25,7 +25,7 @@
   "scripts": {
     "readPower": "nodemon ./nodejs/readPower.coffee",
     "web": "nodemon ./nodejs/web.coffee",
-    "web_dev": "NODE_ENV=development nodemon ./nodejs/web.coffee",
+    "web_dev": "NODE_ENV=development nodemon ./nodejs/web.coffee"
   },
   "private": true,
   "license": "MIT"

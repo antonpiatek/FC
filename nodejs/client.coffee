@@ -27,7 +27,7 @@ initGauge = (id,type, desc, value) ->
       }
     }
   }
-  if type == 'Temperatures'
+  if type == 'temperatures'
     opts.maxValue = 30
     opts.valueFormat = { int : 1, dec : 1 }
     opts.majorTicks = [0,5,10,15,20,25,30]
@@ -109,7 +109,7 @@ initGauge = (id,type, desc, value) ->
 
 updateDebug = (event,data) ->
   debug = $("#debug")
-  $("#debug").prepend "<div>"+data.message+" "+data.topic+"</div>"
+  $("#debug").prepend "<div>"+data.message.value+" "+data.topic+"</div>"
   debug.children()[4]?.remove()
 
 
@@ -130,7 +130,8 @@ wsConn.onmessage = (event) ->
   data=JSON.parse event.data
   updateDebug(event,data)
   #TODO: data is purely just a number, need to include the data timestamp i think
-  if event.timeStamp < new Date()-30
+  # check data.message.time for time of source data
+  if event.time < new Date()-30
     console.error "timestamp is more than 30 s out"
     return
   parts = data.topic.split "/"
@@ -139,15 +140,32 @@ wsConn.onmessage = (event) ->
     id="#{parts[0]}_#{parts[1]}"
     target=$("##{id}_gauge")
     if target.length
-      target.children("span.value").html data.message
-      updateGauge "#{id}_gauge", data.message
+      target.children("span.value").html data.message.value
+      updateGauge "#{id}_gauge", data.message.value
       updated=true
     else
       categoryObj = $("#"+parts[0])
       if categoryObj.length
         #categoryObj.after "<div id='#{id}'>#{parts[1]} <span class='value badge'>#{data.message}</span></div>"
         categoryObj.append "<canvas id='#{id}_gauge'/>"
-        initGauge "#{id}_gauge",parts[0],parts[1],data.message
+        initGauge "#{id}_gauge",parts[0],parts[1],data.message.value
+        updated=true
+      else
+        console.warn "unknown topic category #{parts[0]}"
+  # New temperaturs are temperatures/byName/room
+  else if parts.length == 3 and parts[1] == 'byName'
+    id="#{parts[0]}_#{parts[2]}"
+    target=$("##{id}_gauge")
+    if target.length
+      target.children("span.value").html data.message.value
+      updateGauge "#{id}_gauge", data.message.value
+      updated=true
+    else
+      categoryObj = $("#"+parts[0])
+      if categoryObj.length
+        #categoryObj.after "<div id='#{id}'>#{parts[1]} <span class='value badge'>#{data.message}</span></div>"
+        categoryObj.append "<canvas id='#{id}_gauge'/>"
+        initGauge "#{id}_gauge",parts[0],parts[2],data.message.value
         updated=true
       else
         console.warn "unknown topic category #{parts[0]}"

@@ -22,7 +22,7 @@ if process.env.NODE_ENV == 'development'
 else
   # TODO
 
-app.set 'baseurl', process.env.BASEURL || '/'
+app.set 'baseurl', process.env.BASEURL || ''
 
 app.get '/', routes.index
 app.get '/partials/:name', routes.partials

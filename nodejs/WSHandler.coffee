@@ -44,7 +44,7 @@ exports.WSHandler =
     subscribeMQTT: (wsConn) ->
       #server is older version, set that here
       mqttClient = mqtt.connect 'mqtt://localhost:1883', {protocolVersion: 3,   protocolId: 'MQIsdp' }
-      mqttClient.subscribe 'Temperatures/#', (err,ok) ->
+      mqttClient.subscribe 'temperatures/#', (err,ok) ->
         @logger.warnHTTP err if err?
         #TODO logger
         console.dir ok if ok?
@@ -61,8 +61,9 @@ exports.WSHandler =
         @logger.warn "mqtt error #{e}"
 
       mqttClient.on 'message', (topic, message) =>
+        message=JSON.parse message
         @logger.log "mqtt >> #{topic} #{message}" if @devel
         topic = topic.trim() #looks like my old topic all have a trailing space!
-        wsConn.sendUTF JSON.stringify {topic: topic, message: message.toString()}
+        wsConn.sendUTF JSON.stringify {topic: topic, message: message}
 
       return mqttClient
