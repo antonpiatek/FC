@@ -1,5 +1,4 @@
-serialport = require 'serialport'
-{SerialPort} = require 'serialport'
+SerialPort = require 'serialport'
 {parseString} = require 'xml2js'
 MQTT = require 'mqtt'
 fs = require 'fs'
@@ -10,18 +9,16 @@ port   = '/dev/ttyUSB0'
 readSerial = (mqtt) ->
   mqtt.publish 'test', 'Hello mqtt'
 
-  serial = new SerialPort port, baudrate: 9600, parser: serialport.parsers.readline("\n")
-  serial.open ->
-    console.log "Serial opened"
-    serial.on 'data', (data) ->
-      try
-        parseString data, (err, data) ->
-          if err
-            console.error err
-          else
-            parseData data, mqtt
-      catch e
-        console.error e
+  serial = new SerialPort port, baudrate: 9600, parser: SerialPort.parsers.readline("\n")
+  serial.on 'data', (data) ->
+    try
+      parseString data, (err, data) ->
+        if err
+          console.error err
+        else
+          parseData data, mqtt
+    catch e
+      console.error e
 
 parseData = (data, mqtt) ->
   if data.msg

@@ -16,7 +16,7 @@
     "jade": "^1.9.2",
     "morgan": "^1.5.1",
     "mqtt": "^1.0.9",
-    "serialport": "^1.5.0",
+    "serialport": "^4.0",
     "websocket": "^1.0.17",
     "xml2js": "^0.4.5"
   },
