@@ -65,7 +65,7 @@ setInterval ->
       updates[i] = temps[i]["value"]
     else
       updates[i] = ""
-  console.log "UPDATING RRD",updates
+  console.dir ["UPDATING RRD",updates], {colors:true}
   rrd_temp.update new Date(), [ updates["LivingRm"],updates["Bedroom"],updates["SpareRm"],updates["Outside"]], (err) ->
     if err
       console.log "error: #{err}"

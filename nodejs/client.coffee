@@ -115,17 +115,29 @@ updateDebug = (event,data) ->
 
 updateGauge = (id,temp) ->
   if gauges[id]?
-    gauges[id].setValue(temp)
+    if temp != null
+      gauges[id].setValue(temp)
+    else
+      guages[id].destroy()
+      delete guages[id]
     return
 
 
-wsConn = new WebSocket "ws://#{window.location.host}#{window.baseurl}", "ant-protocol"
+
+ws = "ws://"
+if location.protocol == 'https:'
+  ws = "wss://"
+
+wsConn = new WebSocket "#{ws}#{window.location.host}#{window.baseurl}", "ant-protocol"
+
 wsConn.onclose = (event) ->
     console.error(event)
     debugger
+
 wsConn.onerror = (event) ->
     console.error(event)
     debugger
+
 wsConn.onmessage = (event) ->
   data=JSON.parse event.data
   updateDebug(event,data)
